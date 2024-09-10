@@ -57,6 +57,7 @@ function deleteOneById(id) {
 }
 
 if (require.main === module) {
+  // Add user
   let result = addOne({
     name: "John Doe",
     password: "password123",
@@ -64,9 +65,10 @@ if (require.main === module) {
     address: "123 Main St",
     age: 30,
   });
-  console.assert(result.length === 1, "Test 1 Failed: Should add one user");
-  console.log(result);
-  // Test 2: Add another valid user
+  console.log("result", result);
+  console.assert(typeof result === 'object', 'Result should be an object');
+
+  // Add another user
   result = addOne({
     name: "Jane Smith",
     password: "password456",
@@ -74,18 +76,39 @@ if (require.main === module) {
     address: "456 Elm St",
     age: 25,
   });
-  console.assert(result.length === 2, "Test 2 Failed: Should add another user");
   console.log(result);
+  console.assert(typeof result === 'object', 'Result should be an object');
 
-  console.log("getAll called:", getAll());
+  // Get all users
+  const allUsers = getAll();
+  console.log("getAll called:", allUsers);
+  console.assert(Array.isArray(allUsers), 'getAll should return an array');
+  console.assert(allUsers.length === 2, 'getAll should return an array of length 2');
 
-  console.log("findById called:", findById(1));
+  // Find user by ID
+  const user = findById(1);
+  console.log("findById called:", user);
+  console.assert(typeof user === 'object', 'findById should return an object');
 
-  console.log("updateOne called:", updateOneById(1, { age: 31, address: "789 Oak St" }));
-  console.log("findById called after item updated:", findById(1));
+  // Update user by ID
+  const updatedUser = updateOneById(1, { age: 31, address: "789 Oak St" });
+  console.log("updateOneById called:", updatedUser);
+  console.assert(typeof updatedUser === 'object', 'updateOneById should return an object');
 
-  console.log("deleteOneById called:", deleteOneById(1));
-  console.log("findById called after item deleted:", findById(1));
+  // Verify update
+  const updatedUserCheck = findById(1);
+  console.log("findById called after item updated:", updatedUserCheck);
+  console.assert(updatedUserCheck.age === 31 && updatedUserCheck.address === "789 Oak St", 'User should be updated');
+
+  // Delete user by ID
+  const deletedUser = deleteOneById(1);
+  console.log("deleteOneById called:", deletedUser);
+  console.assert(deletedUser === true, 'deleteOneById should return true');
+
+  // Verify deletion
+  const deletedUserCheck = findById(1);
+  console.log("findById called after item deleted:", deletedUserCheck);
+  console.assert(deletedUserCheck === false, 'User should be deleted');
 }
 
 const User = {
